@@ -12,4 +12,5 @@ Background material
 -------------------
 
 * [Elastic collison](https://en.wikipedia.org/wiki/Elastic_collision)
-* [Canvas Tutorial](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial)
+* [Canvas tutorial](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial)
+* [Another simulation](https://phet.colorado.edu/sims/html/collision-lab/latest/collision-lab_en.html) (Explore 2D)
