@@ -3,10 +3,15 @@ Let's life code a Physics Simulation
 
 The aim for the next live coding sessions is to develop a simple physics simulation in javascript.
 
-Session plan
+Session plan (preliminary)
 ------------
 
 1. Basic data structures
+2. Particles creation and destructuring
+3. HTML interface and buttons
+4. Simulation function
+5. Start and stop simulation
+6. Collisions
 
 Background material
 -------------------
