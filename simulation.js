@@ -24,9 +24,27 @@ function randomNumber(min, max) {
 }
 
 const simulation = {
-    particles: createRandomParticles({numberOfParticles: 6,
-        position: { x: { min: 0, max: 200}, y: { min: 0, max: 200 }}, 
+    particles: createRandomParticles({ numberOfParticles: 6,
+        position: { x: { min: 0, max: 500}, y: { min: 0, max: 500 }}, 
         velocity: { x: { min: -10, max: 10}, y: { min: -10, max: 10 }}})
 };
 
-console.log(simulation);
+function showSimulation(canvas, simulation) {
+    canvas.restore();
+
+    for (const particle of simulation.particles) {
+        const { x, y } = particle.position;
+        canvas.moveTo(x, y);
+        canvas.ellipse(x, y, 5, 5, 0, 0, 360);
+        canvas.fill();
+    }
+
+    canvas.save();
+}
+
+const startButton = document.querySelector("#start-button");
+const stopButton = document.querySelector("#stop-button");
+const simulationCanvas = document.querySelector("#simulation-canvas");
+const canvasContext = simulationCanvas.getContext("2d");
+
+showSimulation(canvasContext, simulation);
