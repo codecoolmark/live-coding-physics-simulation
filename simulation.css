@@ -1,0 +1,9 @@
+menu {
+    list-style-type: none;
+    display: flex;
+    padding: 0;
+}
+
+canvas {
+    border: rgb(157, 165, 168) solid;
+}
