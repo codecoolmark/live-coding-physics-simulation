@@ -1,21 +1,3 @@
-const simulation = {
-    "particles": [
-        {
-            "position": { x: 10, y: 5 },
-            "speed": { x: 5, y: 6 },
-            "diameter": 10,
-            "weight": 6,
-            "color": { red: 120, green: 120, blue: 200 }
-        }, {
-            "position": { x: 10, y: 5 },
-            "speed": { x: 5, y: 6 },
-            "diameter": 10,
-            "weight": 6,
-            "color":  { red: 120, green: 120, blue: 200 }
-        }
-    ]
-}
-
 // this functions get a simulation frame 
 // and returns the next frame
 function simulateOneStep(simulation) {
@@ -43,14 +25,14 @@ function simulateOneStep(simulation) {
 
 function startSimulation() {
     const previousSimulation = initSimulation(1);
-    console.log("before one step", previousSimulation.particles);
     nextSimulation = simulateOneStep(previousSimulation)
-    console.log("after one step", nextSimulation.particles);
     // todo user interface (board, buttons, help)
     // simulation loop
 }
 
-function stopSimulation() {}
+function stopSimulation() { }
+
+function resetSimulation() { }
 
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
@@ -99,3 +81,23 @@ function initSimulation(numberOfParticles, particleOptions = {}) {
 }
 
 startSimulation();
+
+const startSimulationButton = document.getElementById("start-simulation-button");
+const stopSimulationButton = document.getElementById("stop-simulation-button");
+const resetSimulationButton = document.getElementById("reset-simulation-button");
+
+function startButtonEventListener() {
+    startSimulation();
+}
+
+function stopButtonEventListener() {
+    stopSimulation();
+}
+
+function resetButtonEventListener() {
+    resetSimulation();
+}
+
+startSimulationButton.addEventListener("click", startButtonEventListener);
+stopSimulationButton.addEventListener("click", stopButtonEventListener);
+resetSimulationButton.addEventListener("click", resetButtonEventListener);
