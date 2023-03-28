@@ -23,11 +23,21 @@ function simulateOneStep(simulation) {
     return newSimulation
 }
 
-function startSimulation() {
-    const previousSimulation = initSimulation(1);
+function startSimulation(drawingContext) {
+    const previousSimulation = initSimulation(10);
+    drawSimulation(previousSimulation, drawingContext);
     nextSimulation = simulateOneStep(previousSimulation)
     // todo user interface (board, buttons, help)
     // simulation loop
+}
+
+function drawSimulation(simulation, drawingContext) {
+
+    for (const particle of simulation.particles) {
+        drawingContext.beginPath();
+        drawingContext.ellipse(particle.position.x, particle.position.y, 10, 10, 0, 0, 360);
+        drawingContext.fill();
+    }
 }
 
 function stopSimulation() { }
@@ -80,14 +90,14 @@ function initSimulation(numberOfParticles, particleOptions = {}) {
     return simulation;
 }
 
-startSimulation();
-
+const simulationCanvas = document.getElementById("simulation-canvas");
+const drawingContext = simulationCanvas.getContext("2d");
 const startSimulationButton = document.getElementById("start-simulation-button");
 const stopSimulationButton = document.getElementById("stop-simulation-button");
 const resetSimulationButton = document.getElementById("reset-simulation-button");
 
 function startButtonEventListener() {
-    startSimulation();
+    startSimulation(drawingContext);
 }
 
 function stopButtonEventListener() {
