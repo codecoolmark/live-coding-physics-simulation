@@ -1,6 +1,6 @@
 // this functions get a simulation frame 
 // and returns the next frame
-function simulateOneStep(simulation) {
+function simulateOneStep(simulation, stepLength) {
     const newSimulation = {};
     const newParticles = [];
 
@@ -9,8 +9,8 @@ function simulateOneStep(simulation) {
         const currentVelocity = particle.velocity;
         
         const newPosition = {};
-        newPosition.x = currentPosition.x + currentVelocity.x;
-        newPosition.y = currentPosition.y + currentVelocity.y;
+        newPosition.x = currentPosition.x + currentVelocity.x * stepLength;
+        newPosition.y = currentPosition.y + currentVelocity.y * stepLength;
 
         const newParticle = { ...particle };
         newParticle.position = newPosition;
@@ -23,16 +23,30 @@ function simulateOneStep(simulation) {
     return newSimulation
 }
 
+let simulation = null;
+let isSimulationRunning = false; 
+
 function startSimulation(drawingContext) {
-    const previousSimulation = initSimulation(10);
-    drawSimulation(previousSimulation, drawingContext);
-    nextSimulation = simulateOneStep(previousSimulation)
-    // todo user interface (board, buttons, help)
-    // simulation loop
+    isSimulationRunning = true;
+
+    const animationLoopFunction = function () {
+        if (simulation === null) {
+            simulation = initSimulation(10);
+        }
+        simulation = simulateOneStep(simulation, 1 / 100);
+        drawSimulation(simulation, drawingContext);
+        if (isSimulationRunning) {
+            requestAnimationFrame(animationLoopFunction);
+        }
+    };
+
+    animationLoopFunction();
 }
 
 function drawSimulation(simulation, drawingContext) {
-
+    drawingContext.clearRect(0, 0, drawingContext.canvas.width, 
+        drawingContext.canvas.height);
+    
     for (const particle of simulation.particles) {
         drawingContext.beginPath();
         drawingContext.ellipse(particle.position.x, particle.position.y, 10, 10, 0, 0, 360);
@@ -40,9 +54,14 @@ function drawSimulation(simulation, drawingContext) {
     }
 }
 
-function stopSimulation() { }
+function stopSimulation() {
+    isSimulationRunning = false;
+ }
 
-function resetSimulation() { }
+function resetSimulation(drawingContext) {
+    simulation = null;
+    drawSimulation(initSimulation(0), drawingContext);
+ }
 
 function randomNumber(min, max) {
     return Math.random() * (max - min) + min;
@@ -53,7 +72,7 @@ function createParticle({ boxWidth = 100,
     minDiameter = 4, 
     maxDiameter = 4, 
     minVelocity = -10, 
-    maxVeloctity = 10 }) {
+    maxVelocity = 10 }) {
     
     const newParticle = {};
 
@@ -69,8 +88,8 @@ function createParticle({ boxWidth = 100,
     newParticle.position.y = randomNumber(effectiveBoxOriginY, effectiveBoxHeight);
 
     newParticle.velocity = {}
-    newParticle.velocity.x = randomNumber(minVelocity, maxVeloctity);
-    newParticle.velocity.y = randomNumber(minVelocity, maxVeloctity);
+    newParticle.velocity.x = randomNumber(minVelocity, maxVelocity);
+    newParticle.velocity.y = randomNumber(minVelocity, maxVelocity);
 
 
     return newParticle;
@@ -105,7 +124,7 @@ function stopButtonEventListener() {
 }
 
 function resetButtonEventListener() {
-    resetSimulation();
+    resetSimulation(drawingContext);
 }
 
 startSimulationButton.addEventListener("click", startButtonEventListener);
