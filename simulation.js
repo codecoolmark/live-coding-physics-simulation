@@ -1,6 +1,6 @@
 // this functions get a simulation frame 
 // and returns the next frame
-function simulateOneStep(simulation, stepLength) {
+function simulateOneStep(simulation, stepLength, width, height) {
     const newSimulation = {};
     const newParticles = [];
 
@@ -12,8 +12,19 @@ function simulateOneStep(simulation, stepLength) {
         newPosition.x = currentPosition.x + currentVelocity.x * stepLength;
         newPosition.y = currentPosition.y + currentVelocity.y * stepLength;
 
+        const newVelocity = { ...currentVelocity };
+
+        if (newPosition.x < 0 || newPosition.x > width) {
+            newVelocity.x = - currentVelocity.x;
+            newVelocity.y = currentVelocity.y;
+        } else if (newPosition.y < 0 || newPosition.y > height) {
+            newVelocity.x = currentVelocity.x;
+            newVelocity.y = - currentVelocity.y;
+        }
+
         const newParticle = { ...particle };
         newParticle.position = newPosition;
+        newParticle.velocity = newVelocity;
 
         newParticles.push(newParticle);
     }
@@ -33,7 +44,8 @@ function startSimulation(drawingContext) {
         if (simulation === null) {
             simulation = initSimulation(10);
         }
-        simulation = simulateOneStep(simulation, 1 / 100);
+        simulation = simulateOneStep(simulation, 1 / 100, 
+            drawingContext.canvas.width, drawingContext.canvas.height);
         drawSimulation(simulation, drawingContext);
         if (isSimulationRunning) {
             requestAnimationFrame(animationLoopFunction);
