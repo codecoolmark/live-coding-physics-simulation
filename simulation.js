@@ -22,6 +22,19 @@ function simulateOneStep(simulation, stepLength, width, height) {
             newVelocity.y = - currentVelocity.y;
         }
 
+        for (const otherParticle of simulation.particles) {
+            if (distance(newPosition, otherParticle.position) < (particle.diameter / 2 + otherParticle.diameter / 2)) {
+                const otherPosition = otherParticle.position;
+                const otherVelocity = otherParticle.velocity;
+
+                const factor = scalarProduct(subtract2d(newVelocity, otherVelocity), subtract2d(newPosition, otherPosition)) 
+                    / distance(newPosition, otherPosition) 
+
+                newVelocity.x = newPosition.x - otherPosition.x * factor
+                newVelocity.y = newPosition.y - otherPosition.y * factor
+            }
+        }
+        
         const newParticle = { ...particle };
         newParticle.position = newPosition;
         newParticle.velocity = newVelocity;
@@ -32,6 +45,27 @@ function simulateOneStep(simulation, stepLength, width, height) {
     newSimulation.particles = newParticles;
 
     return newSimulation
+}
+
+function distance(positionA, positionB) {
+    const { x: xA, y: yA } = positionA;
+    const { x: xB, y: yB } = positionB;
+
+    return Math.sqrt((xA - xB) ** 2 + (yA - yB) ** 2)
+}
+
+function scalarProduct(vectorA, vectorB) {
+    const { x: xA, y: yA } = vectorA;
+    const { x: xB, y: yB } = vectorB;
+
+    return xA * xB + yA * yB
+}
+
+function subtract2d(vectorA, vectorB) {
+    const { x: xA, y: yA } = vectorA;
+    const { x: xB, y: yB } = vectorB;
+
+    return { x: xA - xB, y: yA - yB }
 }
 
 let simulation = null;
