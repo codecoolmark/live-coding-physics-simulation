@@ -7,33 +7,31 @@ function simulateOneStep(simulation, stepLength, width, height) {
     for (const particle of simulation.particles) {
         const currentPosition = particle.position;
         const currentVelocity = particle.velocity;
-        
-        const newPosition = {};
-        newPosition.x = currentPosition.x + currentVelocity.x * stepLength;
-        newPosition.y = currentPosition.y + currentVelocity.y * stepLength;
 
         const newVelocity = { ...currentVelocity };
 
-        if (newPosition.x < 0 || newPosition.x > width) {
+        if (currentPosition.x < 0 || currentPosition.x > width) {
             newVelocity.x = - currentVelocity.x;
             newVelocity.y = currentVelocity.y;
-        } else if (newPosition.y < 0 || newPosition.y > height) {
+        } else if (currentPosition.y < 0 || currentPosition.y > height) {
             newVelocity.x = currentVelocity.x;
             newVelocity.y = - currentVelocity.y;
         }
 
         for (const otherParticle of simulation.particles) {
-            if (distance(newPosition, otherParticle.position) < (particle.diameter / 2 + otherParticle.diameter / 2)) {
+            if (particle !== otherParticle && distance(currentPosition, otherParticle.position) < (particle.diameter / 2 + otherParticle.diameter / 2)) {
                 const otherPosition = otherParticle.position;
                 const otherVelocity = otherParticle.velocity;
 
-                const factor = scalarProduct(subtract2d(newVelocity, otherVelocity), subtract2d(newPosition, otherPosition)) 
-                    / distance(newPosition, otherPosition) 
-
-                newVelocity.x = newPosition.x - otherPosition.x * factor
-                newVelocity.y = newPosition.y - otherPosition.y * factor
+                const factor = scalarProduct(subtract2d(currentVelocity, otherVelocity), subtract2d(currentPosition, otherPosition)) / (distance(currentPosition, otherPosition) ** 2)
+                newVelocity.x = currentVelocity.x - ((currentPosition.x - otherPosition.x) * factor)
+                newVelocity.y = currentVelocity.y - ((currentPosition.y - otherPosition.y) * factor)
             }
         }
+
+        const newPosition = {};
+        newPosition.x = currentPosition.x + newVelocity.x * stepLength;
+        newPosition.y = currentPosition.y + newVelocity.y * stepLength;
         
         const newParticle = { ...particle };
         newParticle.position = newPosition;
@@ -95,7 +93,7 @@ function drawSimulation(simulation, drawingContext) {
     
     for (const particle of simulation.particles) {
         drawingContext.beginPath();
-        drawingContext.ellipse(particle.position.x, particle.position.y, 10, 10, 0, 0, 360);
+        drawingContext.ellipse(particle.position.x, particle.position.y, particle.diameter / 2, particle.diameter / 2, 0, 0, 360);
         drawingContext.fill();
     }
 }
