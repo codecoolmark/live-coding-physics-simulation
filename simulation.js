@@ -74,7 +74,12 @@ function startSimulation(drawingContext) {
 
     const animationLoopFunction = function () {
         if (simulation === null) {
-            simulation = initSimulation(10);
+            simulation = initSimulation(10, {
+                boxWidth: drawingContext.canvas.width,
+                boxHeight: drawingContext.canvas.height,
+                minDiameter: 40,
+                maxDiameter: 100
+            });
         }
         simulation = simulateOneStep(simulation, 1 / 100, 
             drawingContext.canvas.width, drawingContext.canvas.height);
@@ -88,13 +93,19 @@ function startSimulation(drawingContext) {
 }
 
 function drawSimulation(simulation, drawingContext) {
+    const particleImage = document.getElementById("particle-image")
     drawingContext.clearRect(0, 0, drawingContext.canvas.width, 
         drawingContext.canvas.height);
+    drawingContext.fillStyle = "rgba(142, 172, 190, 0)"
     
     for (const particle of simulation.particles) {
         drawingContext.beginPath();
         drawingContext.ellipse(particle.position.x, particle.position.y, particle.diameter / 2, particle.diameter / 2, 0, 0, 360);
         drawingContext.fill();
+        drawingContext.drawImage(particleImage, 
+            particle.position.x - particle.diameter / 2, 
+            particle.position.y - particle.diameter / 2, 
+            Math.round(particle.diameter), Math.round(particle.diameter))
     }
 }
 
